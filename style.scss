@@ -1,0 +1,97 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+$color: rgb(236, 65, 122);
+
+body {
+  overflow: auto;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+.container {
+  position: relative;
+  top: 0;
+  left: 0;
+
+  .adress {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-family: Poppins;
+    border-radius: 50%;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: 200ms;
+    background: white;
+    z-index: 999;
+  }
+
+  .adress.active,
+  .adress:hover {
+    color: $color;
+    border-color: $color;
+  }
+
+  .line {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    transform-origin: left;
+    align-items: center;
+    transform-style: preserve-3d;
+
+    span {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 1px black solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: poppins;
+      z-index: 20;
+      background: white;
+      cursor: pointer;
+      transition: 200ms;
+    }
+
+    span:hover {
+      color: $color;
+      border-color: $color;
+    }
+  }
+
+  .line.active {
+    border-color: $color;
+    span {
+      color: $color;
+      border-color: $color;
+    }
+  }
+
+  .line.active::before {
+    background: $color;
+  }
+
+  .line::before {
+    position: absolute;
+    content: "";
+    top: 50%;
+    left: 0;
+    height: 1px;
+    background: black;
+    width: 100%;
+  }
+}

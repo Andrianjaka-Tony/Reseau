@@ -21,18 +21,22 @@ export class Adress {
   links;
   adresses;
   adressesPing;
+  x;
+  y;
 
   /**
    * @param {number} id
    * @param {string} name
    * @param {Link[]} links
    */
-  constructor(id, name, links) {
+  constructor(id, name, links, x, y) {
     this.id = id;
     this.name = name;
     this.links = links;
     this.adresses = [];
     this.adressesPing = [];
+    this.x = x;
+    this.y = y;
   }
 
   /**
@@ -203,6 +207,10 @@ export class Adress {
       response.push(predecessor);
     }
     response.pop();
+
+    if (response.length == 0) {
+      response.push(this);
+    }
   }
 
   /**
@@ -230,5 +238,60 @@ export class Adress {
       value,
     };
     return responseData;
+  }
+
+  static colorize(responseData) {
+    let response = responseData.response;
+    response.reverse();
+    for (let i = 0; i < response.length; i++) {
+      const adress = response[i];
+      document.getElementById(`adress-${adress.id}`).classList.add("active");
+    }
+    for (let i = 0; i < response.length - 1; i++) {
+      const adress = response[i];
+      const target = response[i + 1];
+      document
+        .getElementById(`line-${adress.id}-${target.id}`)
+        .classList.add("active");
+    }
+  }
+
+  render() {
+    let response = document.createElement("div");
+    response.classList.add("adress");
+    response.id = `adress-${this.id}`;
+    response.setAttribute("style", `top: ${this.y}px; left: ${this.x}px;`);
+    response.innerHTML = this.name;
+
+    document.querySelector(".container").appendChild(response);
+    this.drawLines();
+  }
+
+  drawLines() {
+    let centerX = this.x + 50;
+    let centerY = this.y + 50;
+    this.adresses.forEach((adress) => {
+      let sign = (this.y - adress.y) / Math.abs(this.y - adress.y);
+      let width = Math.sqrt(
+        Math.pow(this.x - adress.x, 2) + Math.pow(this.y - adress.y, 2)
+      );
+      let angle = sign * Math.acos((this.x - adress.x) / width) + Math.PI;
+
+      let top = centerY - 25;
+      let left = centerX;
+
+      let line = document.createElement("div");
+      line.id = `line-${this.id}-${adress.id}`;
+      line.classList.add("line");
+      line.setAttribute("width", width);
+      line.setAttribute(
+        "style",
+        `top: ${top}px; left: ${left}px; width: ${width}px; transform: rotate(${angle}rad)`
+      );
+      line.innerHTML = `<span style="transform: rotate(${-angle}rad);">${this.getPing(
+        adress
+      )}</span>`;
+      document.querySelector(".container").appendChild(line);
+    });
   }
 }
